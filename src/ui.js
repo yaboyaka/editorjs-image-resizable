@@ -126,10 +126,11 @@ export default class Ui {
         }
       }
     });
+    console.log('create this', this);
 
-    container.addEventListener('touchstart', this.onPinchStart, { passive: false });
-    container.addEventListener('touchmove', this.onPinchMove, { passive: false });
-    container.addEventListener('touchend', this.onPinchEnd);
+    container.addEventListener('touchstart', (e) => { this.onPinchStart(e); }, { passive: false });
+    container.addEventListener('touchmove', (e) => { this.onPinchMove(e); }, { passive: false });
+    container.addEventListener('touchend', (e) => this.onPinchEnd(e));
 
     return container;
   }
@@ -321,8 +322,6 @@ export default class Ui {
    * @returns {void}
    */
   onPinchMove(event) {
-    console.log('Move event.touches.length', event.touches.length);
-
     if (this.nodes.imageEl && event.touches.length === 2 && this.pinchDistance) {
       event.preventDefault();
       const currentDistance = this.getDistance(event.touches[0], event.touches[1]);
