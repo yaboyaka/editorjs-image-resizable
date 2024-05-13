@@ -22,7 +22,7 @@ export default class Ui {
     this.readOnly = readOnly;
     this.nodes = {
       wrapper: make('div', [this.CSS.baseClass, this.CSS.wrapper]),
-      imageContainer: make('div', [ this.CSS.imageContainer ]),
+      imageContainer: this.createImageContainer(),
       fileButton: this.createFileButton(),
       imageEl: undefined,
       imagePreloader: make('div', this.CSS.imagePreloader),
@@ -101,6 +101,30 @@ export default class Ui {
     }
 
     return this.nodes.wrapper;
+  }
+
+  /**
+   * Creates image container
+   *
+   * @returns {Element}
+   */
+  createImageContainer() {
+    const container = make('div', [ this.CSS.imageContainer ]);
+
+    container.setAttribute('data-hint', this.api.i18n.t('Shift + Scroll to zoom'));
+    container.addEventListener('wheel', (event) => {
+      if (event.shiftKey) {
+        event.preventDefault();
+        if (this.nodes.imageEl) {
+          const currentMaxWidth = parseInt(this.nodes.imageEl.style.maxWidth || 100);
+          const newMaxWidth = event.deltaY < 0 ? Math.min(100, currentMaxWidth + 5) : Math.max(15, currentMaxWidth - 5);
+
+          this.nodes.imageEl.style.maxWidth = newMaxWidth + '%';
+        }
+      }
+    });
+
+    return container;
   }
 
   /**
@@ -250,4 +274,3 @@ export default class Ui {
     this.nodes.wrapper.classList.toggle(`${this.CSS.wrapper}--${tuneName}`, status);
   }
 }
-

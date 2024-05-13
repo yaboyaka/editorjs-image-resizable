@@ -12,6 +12,25 @@
       max-width: 100%;
       vertical-align: bottom;
       display: block;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    &::before {
+      content: attr(data-hint);
+      color: var(--front-color);
+      background-color: var(--border-color);
+      position: absolute;
+      right: 10px;
+      top: 10px;
+      border-radius: 10px;
+      padding: 0 4px;
+      z-index: 3;
+      opacity: 0;
+    }
+
+    &:hover::before {
+      opacity: 1;
     }
 
     &-preloader {
