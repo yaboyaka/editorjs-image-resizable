@@ -1,6 +1,6 @@
 {
   "name": "@yaboyaka/editorjs-image-resizable",
-  "version": "0.1.0-alpha.1",
+  "version": "0.1.0-alpha.2",
   "keywords": [
     "codex editor",
     "image",
@@ -9,7 +9,7 @@
   ],
   "description": "Image Tool for Editor.js",
   "license": "MIT",
-  "repository": "https://github.com/editor-js/image",
+  "repository": "https://github.com/yaboyaka/editorjs-image-resizable",
   "files": [
     "dist"
   ],
