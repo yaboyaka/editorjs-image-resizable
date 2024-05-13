@@ -46,6 +46,9 @@ export default class Ui {
     this.nodes.wrapper.appendChild(this.nodes.imageContainer);
     this.nodes.wrapper.appendChild(this.nodes.caption);
     this.nodes.wrapper.appendChild(this.nodes.fileButton);
+
+    this.pinchDistance = 0;
+    this.initImageMaxWidth = null;
   }
 
   /**
@@ -124,6 +127,10 @@ export default class Ui {
       }
     });
 
+    container.addEventListener('touchstart', this.onPinchStart, { passive: false });
+    container.addEventListener('touchmove', this.onPinchMove, { passive: false });
+    container.addEventListener('touchend', this.onPinchEnd);
+
     return container;
   }
 
@@ -170,9 +177,10 @@ export default class Ui {
    * Shows an image
    *
    * @param {string} url - image source
+   * @param {number} maxWidth - image max width
    * @returns {void}
    */
-  fillImage(url) {
+  fillImage(url, maxWidth = 100) {
     /**
      * Check for a source extension to compose element correctly: video tag for mp4, img — for others
      */
@@ -180,6 +188,9 @@ export default class Ui {
 
     const attributes = {
       src: url,
+      style: {
+        maxWidth: `${maxWidth}%`,
+      },
     };
 
     /**
@@ -272,5 +283,68 @@ export default class Ui {
    */
   applyTune(tuneName, status) {
     this.nodes.wrapper.classList.toggle(`${this.CSS.wrapper}--${tuneName}`, status);
+  }
+
+  /**
+   * Helper to get distance between two touches
+   *
+   * @param {Touch} touch1 - first touch
+   * @param {Touch} touch2 - second touch
+   * @returns {number} - distance between touches
+   */
+  getDistance(touch1, touch2) {
+    const dx = touch1.pageX - touch2.pageX;
+    const dy = touch1.pageY - touch2.pageY;
+
+    return Math.sqrt(dx * dx + dy * dy);
+  }
+
+  /**
+   * Handle pinch gesture start
+   *
+   * @param {TouchEvent} event - touch event
+   * @returns {void}
+   */
+  onPinchStart(event) {
+    console.log('Start event.touches.length', event.touches.length);
+    if (this.nodes.imageEl && event.touches.length === 2) {
+      event.preventDefault();
+      this.pinchDistance = this.getDistance(event.touches[0], event.touches[1]);
+      this.initImageMaxWidth = parseFloat(this.nodes.imageEl.style.maxWidth); // Get the current max-width as a percentage
+    }
+  }
+
+  /**
+   * Handle pinch gesture move
+   *
+   * @param {TouchEvent} event - touch event
+   * @returns {void}
+   */
+  onPinchMove(event) {
+    console.log('Move event.touches.length', event.touches.length);
+
+    if (this.nodes.imageEl && event.touches.length === 2 && this.pinchDistance) {
+      event.preventDefault();
+      const currentDistance = this.getDistance(event.touches[0], event.touches[1]);
+      const ratio = currentDistance / this.pinchDistance;
+      let newWidthPercent = this.initImageMaxWidth * ratio;
+
+      newWidthPercent = Math.max(10, Math.min(100, newWidthPercent));
+      this.nodes.imageEl.style.maxWidth = `${Math.round(newWidthPercent)}%`;
+      this.pinchDistance = currentDistance;
+    }
+  }
+
+  /**
+   * Handle pinch gesture end
+   *
+   * @param {TouchEvent} event - touch event
+   * @returns {void}
+   */
+  onPinchEnd(event) {
+    if (event.touches.length < 2) {
+      this.pinchDistance = null; // Reset initial distance
+      this.initImageMaxWidth = null;// Reset initial max width percentage
+    }
   }
 }
