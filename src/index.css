@@ -18,8 +18,8 @@
 
     &::before {
       content: attr(data-hint);
-      color: var(--front-color);
-      background-color: var(--border-color);
+      color: var(--border-color);
+      background-color: rgba(0, 0, 0, 0.8);
       position: absolute;
       right: 10px;
       top: 10px;

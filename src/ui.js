@@ -126,7 +126,6 @@ export default class Ui {
         }
       }
     });
-    console.log('create this', this);
 
     container.addEventListener('touchstart', (e) => { this.onPinchStart(e); }, { passive: false });
     container.addEventListener('touchmove', (e) => { this.onPinchMove(e); }, { passive: false });
@@ -307,11 +306,12 @@ export default class Ui {
    * @returns {void}
    */
   onPinchStart(event) {
-    console.log('Start event.touches.length', event.touches.length);
     if (this.nodes.imageEl && event.touches.length === 2) {
       event.preventDefault();
       this.pinchDistance = this.getDistance(event.touches[0], event.touches[1]);
-      this.initImageMaxWidth = parseFloat(this.nodes.imageEl.style.maxWidth); // Get the current max-width as a percentage
+      this.initImageMaxWidth = parseFloat(this.nodes.imageEl.style.maxWidth || 100); // Get the current max-width as a percentage
+      console.log('start this.pinchDistance', this.pinchDistance);
+      console.log('start this.initImageMaxWidth', this.initImageMaxWidth);
     }
   }
 
@@ -326,9 +326,11 @@ export default class Ui {
       event.preventDefault();
       const currentDistance = this.getDistance(event.touches[0], event.touches[1]);
       const ratio = currentDistance / this.pinchDistance;
-      let newWidthPercent = this.initImageMaxWidth * ratio;
 
-      newWidthPercent = Math.max(10, Math.min(100, newWidthPercent));
+      const newWidthPercent = Math.max(10, Math.min(100, this.initImageMaxWidth * ratio));
+
+      console.log('move newWidthPercent', newWidthPercent);
+
       this.nodes.imageEl.style.maxWidth = `${Math.round(newWidthPercent)}%`;
       this.pinchDistance = currentDistance;
     }
