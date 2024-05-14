@@ -127,8 +127,12 @@ export default class Ui {
       }
     });
 
-    container.addEventListener('touchstart', (e) => { this.onPinchStart(e); }, { passive: false });
-    container.addEventListener('touchmove', (e) => { this.onPinchMove(e); }, { passive: false });
+    container.addEventListener('touchstart', (e) => {
+      this.onPinchStart(e);
+    }, { passive: false });
+    container.addEventListener('touchmove', (e) => {
+      this.onPinchMove(e);
+    }, { passive: false });
     container.addEventListener('touchend', (e) => this.onPinchEnd(e));
 
     return container;
