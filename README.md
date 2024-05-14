@@ -2,7 +2,7 @@
 
 # Image Tool
 
-Image Block for the [Editor.js](https://editorjs.io).
+Forked Image Block for the [Editor.js](https://editorjs.io)  that allows image resizing by setting its maximum width within the container. Also includes an option to hide default tunes (see updates in Config Params section).
 
 ![](https://capella.pics/63a03d04-3816-45b2-87b2-d85e556f0066.jpg)
 
@@ -86,6 +86,23 @@ Image Tool supports these configuration parameters:
 
 Note that if you don't implement your custom uploader methods, the `endpoints` param is required.
 
+**UPDATE 1**: Now you can override default tunes and hide them by passing `isVisible` property with `false` value to action object with the same `name` as default tune's one, like:
+```
+...
+config: {
+  ...
+  actions: [
+    {
+      name: 'stretched',
+      isVisible: false,
+    },
+  ],
+  ...
+}
+...
+```
+**UPDATE 2**: Added support for `isDisabled` action/tune property, see: https://editorjs.io/menu-config/
+
 ## Tool's settings
 
 ![](https://capella.pics/c74cdeec-3405-48ac-a960-f784188cf9b4.jpg)
@@ -124,6 +141,7 @@ This Tool returns `data` with following format
 | withBorder     | `boolean` | add border to image             |
 | withBackground | `boolean` | need to add background          |
 | stretched      | `boolean` | stretch image to screen's width |
+| maxWidth      | `number` | image's max width percentage |
 
 
 ```json
@@ -136,7 +154,8 @@ This Tool returns `data` with following format
         "caption" : "Roadster // tesla.com",
         "withBorder" : false,
         "withBackground" : false,
-        "stretched" : true
+        "stretched" : true,
+        "maxWidth" : 70
     }
 }
 ```

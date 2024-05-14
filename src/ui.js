@@ -304,11 +304,11 @@ export default class Ui {
    * @returns {void}
    */
   onPinchStart(event) {
+    this.nodes.imageContainer.setAttribute('data-hint', this.api.i18n.t('Pinch to zoom'));
     if (this.nodes.imageEl && event.touches.length === 2) {
       event.preventDefault();
       this.pinchDistance = this.getDistance(event.touches[0], event.touches[1]);
       this.initImageMaxWidth = parseFloat(this.nodes.imageEl.style.maxWidth || 100); // Get the current max-width as a percentage
-      console.log('start pinch, Init Distance', this.pinchDistance);
     }
   }
 
@@ -324,10 +324,7 @@ export default class Ui {
       const currentDistance = this.getDistance(event.touches[0], event.touches[1]);
       const ratio = currentDistance / this.pinchDistance;
 
-      console.log('move pinch, Current Distance', currentDistance, 'Ratio', ratio);
-
       const newWidthPercent = Math.max(10, Math.min(100, this.initImageMaxWidth * ratio));
-
 
       this.nodes.imageEl.style.maxWidth = `${Math.round(newWidthPercent)}%`;
     }

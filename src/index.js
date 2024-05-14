@@ -236,14 +236,27 @@ export default class ImageTool {
   renderSettings() {
     // Merge default tunes with the ones that might be added by user
     // @see https://github.com/editor-js/image/pull/49
-    const tunes = ImageTool.tunes.concat(this.config.actions);
+    const allTunes = [...ImageTool.tunes, ...this.config.actions];
+    // Remove duplicates by name, keep the last one so dev can override default tunes
+    const tunesWithOverrides = allTunes.reduce((acc, current) => {
+      const index = acc.findIndex(item => item.name === current.name);
 
-    return tunes.map(tune => ({
+      if (index !== -1) {
+        acc[index] = current;
+      } else {
+        acc.push(current);
+      }
+
+      return acc;
+    }, []);
+
+    return tunesWithOverrides.filter(tune => tune.isVisible !== false).map(tune => ({
       icon: tune.icon,
       label: this.api.i18n.t(tune.title),
       name: tune.name,
       toggle: tune.toggle,
       isActive: this.data[tune.name],
+      isDisabled: tune.isDisabled,
       onActivate: () => {
         /* If it'a user defined tune, execute it's callback stored in action property */
         if (typeof tune.action === 'function') {
