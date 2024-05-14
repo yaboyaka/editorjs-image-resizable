@@ -177,6 +177,7 @@ export default class ImageTool {
         });
       },
       readOnly,
+      maxWidth: data.maxWidth,
     });
 
     /**
@@ -217,8 +218,10 @@ export default class ImageTool {
    */
   save() {
     const caption = this.ui.nodes.caption;
+    const maxWidth = parseInt(this.ui.nodes.imageEl.style.maxWidth) || 100;
 
     this._data.caption = caption.innerHTML;
+    this._data.maxWidth = maxWidth || 100;
 
     return this.data;
   }
@@ -349,6 +352,7 @@ export default class ImageTool {
    * @param {ImageToolData} data - data in Image Tool format
    */
   set data(data) {
+    this._data.maxWidth = data.maxWidth || 100;
     this.image = data.file;
 
     this._data.caption = data.caption || '';
@@ -383,7 +387,7 @@ export default class ImageTool {
     this._data.file = file || {};
 
     if (file && file.url) {
-      this.ui.fillImage(file.url);
+      this.ui.fillImage(file.url, this.data.maxWidth || 99);
     }
   }
 

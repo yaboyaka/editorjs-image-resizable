@@ -15,7 +15,7 @@ export default class Ui {
    * @param {Function} ui.onSelectFile - callback for clicks on Select file button
    * @param {boolean} ui.readOnly - read-only mode flag
    */
-  constructor({ api, config, onSelectFile, readOnly }) {
+  constructor({ api, config, onSelectFile, readOnly, maxWidth }) {
     this.api = api;
     this.config = config;
     this.onSelectFile = onSelectFile;
@@ -188,9 +188,7 @@ export default class Ui {
 
     const attributes = {
       src: url,
-      style: {
-        maxWidth: `${maxWidth}%`,
-      },
+      style: `max-width: ${maxWidth}%`,
     };
 
     /**
@@ -310,8 +308,7 @@ export default class Ui {
       event.preventDefault();
       this.pinchDistance = this.getDistance(event.touches[0], event.touches[1]);
       this.initImageMaxWidth = parseFloat(this.nodes.imageEl.style.maxWidth || 100); // Get the current max-width as a percentage
-      console.log('start this.pinchDistance', this.pinchDistance);
-      console.log('start this.initImageMaxWidth', this.initImageMaxWidth);
+      console.log('start pinch, Init Distance', this.pinchDistance);
     }
   }
 
@@ -327,12 +324,12 @@ export default class Ui {
       const currentDistance = this.getDistance(event.touches[0], event.touches[1]);
       const ratio = currentDistance / this.pinchDistance;
 
+      console.log('move pinch, Current Distance', currentDistance, 'Ratio', ratio);
+
       const newWidthPercent = Math.max(10, Math.min(100, this.initImageMaxWidth * ratio));
 
-      console.log('move newWidthPercent', newWidthPercent);
 
       this.nodes.imageEl.style.maxWidth = `${Math.round(newWidthPercent)}%`;
-      this.pinchDistance = currentDistance;
     }
   }
 
